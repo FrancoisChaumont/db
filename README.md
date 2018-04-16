@@ -5,7 +5,7 @@ PHP libray to communicate with databases
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Requirements
-PHP 7.0+ | MySQL/MariaDB
+PHP 7.0+ | MySQL/MariaDB 
 
 ### Installation
 Just include the library and you are ready to go.
