@@ -6,7 +6,7 @@
      */
 
     /**
-     * Libray to interact with databases
+     * Libray to communicate with databases
      */
     class Db {
     /* member variables */
