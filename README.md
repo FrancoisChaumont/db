@@ -1,5 +1,5 @@
-# DB - database communication
-Libray to interact with databases 
+# DB - communicate with databases
+PHP libray to communicate with databases 
 
 ## Getting started
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
@@ -26,4 +26,7 @@ See also the list of [contributors](https://github.com/FrancoisChaumont/db/graph
 
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
+
+## Notes
+Todo: Add support for more databases (currently only supports MySQL and MariaDB)
 
