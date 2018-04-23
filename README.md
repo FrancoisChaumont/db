@@ -1,5 +1,5 @@
-# DB - communicate with databases
-PHP libray to communicate with databases 
+# DB - communicate with databases using PDO
+PHP libray to communicate with databases using PDO
 
 ## Getting started
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
