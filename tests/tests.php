@@ -1,5 +1,10 @@
 <?php
-    require __DIR__ . '/../src/db.php';
+
+namespace FC;
+
+use FC\Db;
+
+    require __DIR__ . '/../vendor/autoload.php';
 
     $dbname = 'tests_dbclass';
     $host = 'localhost';

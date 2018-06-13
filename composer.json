@@ -1,0 +1,19 @@
+{
+    "name": "francoischaumont/db",
+    "description": "Communicate with databases using PDO",
+    "authors": [
+        {
+            "name": "Francois Chaumont",
+            "email": "funcois@outlook.com",
+            "role": "developer"
+        }
+    ],
+    "require": {
+        "php": "^7.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "FC\\": "src/"
+        }
+    }
+}
