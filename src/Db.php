@@ -23,6 +23,8 @@ class Db {
     private $statement;
     private $errMessage;
     private $lastId;
+    private $debug;
+    private $queryDump = '';
     
 /* member functions */
     public function setDbname(string $par) { $this->dbname = $par; }
@@ -37,6 +39,7 @@ class Db {
     public function getPassword() { return $this->password; }
     public function isConnected() { return $this->connected; }
     public function getErrMessage() { return $this->errMessage; }
+    public function getQueryDump() { return $this->queryDump; }
     public function getLastId() { return $this->lastId; }
     // query parameter array functions
     public function emptyParams() { $this->arrParams = array(); }
@@ -63,13 +66,14 @@ class Db {
      * @param string $parPassword user password
      * @param string $parCharset connection character set
      */
-    function __construct(string $parDbName, string $parHost, string $parLogin, string $parPassword, string $parCharset='utf8mb4') { 
+    function __construct(string $parDbName, string $parHost, string $parLogin, string $parPassword, string $parCharset='utf8mb4', bool $debug=false) { 
         $this->dbname = $parDbName;
         $this->host = $parHost;
         $this->login = $parLogin;
         $this->password = $parPassword;
         $this->arrParams = array();
         $this->charset = $parCharset;
+        $this->debug = $debug;
 
         $this->connect();
     }
@@ -126,11 +130,31 @@ class Db {
     private function executeQuery() {
         try {
             $this->statement->execute();
+            if ($this->debug) { $this->dumpQuery(); }
             return true;
         }
         catch (\PDOException $e) {
             $this->errMessage = $e->getMessage();
             return false;
+        }
+    }
+
+    /**
+     * Dump the prepared query along with its parameters into the coresponding member variable
+     *
+     * @return void
+     */
+    private function dumpQuery() {
+        ob_start();
+        $this->statement->debugDumpParams();
+        $this->queryDump = ob_get_clean();
+        ob_end_clean();
+
+        $this->queryDump .= "\n";
+
+        $i = 0;
+        foreach($this->arrParams as $param) {
+            $this->queryDump .= "[" . ++$i . "] $param[0]: $param[1]\n";
         }
     }
 

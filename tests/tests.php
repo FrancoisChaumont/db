@@ -13,7 +13,7 @@ use FC\Db;
     
 // instantiation of the class and attempted connection to the database
     echo '### Connection to the database: ';
-    $db = new Db($dbname, $host, $login, $password);
+    $db = new Db($dbname, $host, $login, $password, 'utf8mb4', true);
 
     if ($db->isConnected()) { 
         echo "<font color='green'>CONNECTED</font>".'<br><br>'; 
@@ -59,7 +59,7 @@ use FC\Db;
         while ($row = $db->getNextRow()) {
             print_r_pre($row);
         }
-
+        
 // select with group by
         echo '### Select query with group by <br>';
         $db->emptyParams();
@@ -98,6 +98,9 @@ use FC\Db;
                 print_r_pre($row);
             }
         }
+
+        // display query and its parameters
+        //echo $db->getQueryDump();
 
 // update last inserted record
         echo "### Update the last inserted record (id=$lastId) modifying lastname 'Jackson' into 'Jordan' <br>";
