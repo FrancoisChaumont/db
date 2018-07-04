@@ -100,7 +100,7 @@ use FC\Db;
         }
 
         // display query and its parameters
-        //echo $db->getQueryDump();
+        echo $db->getQueryDump();
 
 // update last inserted record
         echo "### Update the last inserted record (id=$lastId) modifying lastname 'Jackson' into 'Jordan' <br>";

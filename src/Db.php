@@ -148,7 +148,6 @@ class Db {
         ob_start();
         $this->statement->debugDumpParams();
         $this->queryDump = ob_get_clean();
-        ob_end_clean();
 
         $this->queryDump .= "\n";
 
