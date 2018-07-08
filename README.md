@@ -1,4 +1,11 @@
 # DB - communicate with databases using PDO
+
+![GitHub release](https://img.shields.io/github/release/FrancoisChaumont/db.svg)
+[![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/FrancoisChaumont/db/issues)
+[![GitHub issues](https://img.shields.io/github/issues/FrancoisChaumont/db.svg)](https://github.com/FrancoisChaumont/db/issues)
+[![GitHub stars](https://img.shields.io/github/stars/FrancoisChaumont/db.svg)](https://github.com/FrancoisChaumont/db/stargazers)
+![Github All Releases](https://img.shields.io/github/downloads/FrancoisChaumont/db/total.svg)
+
 PHP libray to communicate with databases using PDO
 
 ## Getting started
