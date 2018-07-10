@@ -1,8 +1,6 @@
 <?php
 
-namespace FC;
-
-use FC\Db;
+namespace FC\Db;
 
     require __DIR__ . '/../vendor/autoload.php';
 
