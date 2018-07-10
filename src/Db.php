@@ -1,6 +1,6 @@
 <?php
 
-namespace FC\Db;
+namespace FC\Database;
 
 /**
  * TODO: Add support for other databases than MySQL and MariaDB

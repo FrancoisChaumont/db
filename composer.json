@@ -13,7 +13,7 @@
     },
     "autoload": {
         "psr-4": {
-            "FC\\Db\\": "src/"
+            "FC\\Database\\": "src/"
         }
     }
 }
