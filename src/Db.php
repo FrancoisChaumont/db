@@ -3,15 +3,23 @@
 namespace FC\Database;
 
 /**
- * TODO: Add support for other databases than MySQL and MariaDB
  * NOTE: select, update, delete and execScript, although identical have been split to give room for distintive behavior if needed
  */
 
 /**
  * Libray to communicate with databases
  */
-class Db {
-/* member variables */
+class Db 
+{
+    const MYSQL = 'mysql';
+    const POSTGRESQL = 'pgsql';
+
+    const DBMSs = [
+        self::MYSQL,
+        self::POSTGRESQL
+    ];
+
+    private $dbms;
     private $dbname;
     private $charset;
     private $host;
@@ -19,7 +27,7 @@ class Db {
     private $password;
     private $connection;
     private $connected;
-    private $arrParams;
+    private $parameters;
     private $statement;
     private $errMessage;
     private $lastId;
@@ -27,71 +35,95 @@ class Db {
     private $queryDump = '';
     
 /* member functions */
-    public function setDbname(string $par) { $this->dbname = $par; }
+    public function setDbms(string $p) { $this->dbms = $p; }
+    public function getDbms() { return $this->dbms; }
+    public function setDbname(string $p) { $this->dbname = $p; }
     public function getDbname() { return $this->dbname; }
-    public function setCharset(string $par) { $this->charset = $par; }
+    public function setCharset(string $p) { $this->charset = $p; }
     public function getCharset() { return $this->charset; }
-    public function setHost(string $par) { $this->host = $par; }
+    public function setHost(string $p) { $this->host = $p; }
     public function getHost() { return $this->host; }
-    public function setLogin(string $par) { $this->login = $par; }
+    public function setLogin(string $p) { $this->login = $p; }
     public function getLogin() { return $this->login; }
-    public function setPassword(string $par) { $this->password = $par; }
+    public function setPassword(string $p) { $this->password = $p; }
     public function getPassword() { return $this->password; }
     public function isConnected() { return $this->connected; }
     public function getErrMessage() { return $this->errMessage; }
     public function getQueryDump() { return $this->queryDump; }
     public function getLastId() { return $this->lastId; }
+
     // query parameter array functions
-    public function emptyParams() { $this->arrParams = array(); }
+    public function emptyParams() { $this->parameters = array(); }
     
     /**
      * Add parameters to bind to SQL query
      *
-     * @param string $parName parameter name
-     * @param string $parValue parameter value
+     * @param string $name parameter name
+     * @param string $value parameter value
      * @return void
      */
-    public function addParamToBind(string $parName, string $parValue) {
-        $arraySize = sizeof($this->arrParams);
-        $this->arrParams[$arraySize][0] = $parName;
-        $this->arrParams[$arraySize][1] = $parValue;
+    public function addParamToBind(string $name, string $value): void
+    {
+        $arraySize = sizeof($this->parameters);
+        $this->parameters[$arraySize][0] = $name;
+        $this->parameters[$arraySize][1] = $value;
     }
 
     /**
-     * Constructor: attempt to connect to database after initialization of member variables
+     * List all DBMS handled by this library
      *
-     * @param string $parDbName database name
-     * @param string $parHost database hostname
-     * @param string $parLogin user login
-     * @param string $parPassword user password
-     * @param string $parCharset connection character set
+     * @return string comma separated list of DBMS available for use
      */
-    function __construct(string $parDbName, string $parHost, string $parLogin, string $parPassword, string $parCharset='utf8mb4', bool $debug=false) { 
-        $this->dbname = $parDbName;
-        $this->host = $parHost;
-        $this->login = $parLogin;
-        $this->password = $parPassword;
-        $this->arrParams = array();
-        $this->charset = $parCharset;
+    public static function listHandledDbms(): string
+    {
+        return implode(', ', self::DBMSs);
+    }
+
+    /**
+     * Attempt to connect to database after initialization of member variables
+     * 
+     * @param string $dbms DBMS to use (MySQL, PostgreSQL, ... see class constants)
+     * @param string $dbName database name
+     * @param string $host hostname
+     * @param string $login user login
+     * @param string $password user password
+     * @param string $charset connection character set (only used with MySQL)
+     * @param string $debug allow to dump a query with bind parameters for debug purpose
+     */
+    function __construct(string $dbms, string $dbName, string $host, string $login, string $password, string $charset = '', bool $debug = false)
+    {
+        if (!in_array($dbms, self::DBMSs)) {
+            $msg = sprintf("Cannot use DBMS '%s'. Handled DBMSs are: ", $dbms, implode(', ', self::DBMSs));
+            throw new \Exception($msg);
+        }
+
+        $this->dbms = $dbms;
+        $this->dbname = $dbName;
+        $this->host = $host;
+        $this->login = $login;
+        $this->password = $password;
+        $this->parameters = array();
+        $this->charset = $charset;
         $this->debug = $debug;
 
         $this->connect();
     }
 
     /**
-     * Desctructor: disconnect connection properly
+     * Disconnect connection properly when destructing the object
      */
-    function __destruct() {
+    function __destruct()
+    {
         $this->disconnect();
     }
 
-/* methods */
     /**
      * Disconnect from database and reset flag
      *
      * @return void
      */
-    public function disconnect() {
+    public function disconnect(): void
+    {
         $this->connection = null;
         $this->connected = false;
     }
@@ -101,14 +133,17 @@ class Db {
      *
      * @return void
      */
-    public function connect() {
+    public function connect(): void
+    {
         // reset connection status
         $this->connected = false;
         // reset error message
         $this->errMessage = '';
 
+        $charset = $this->dbms == self::MYSQL && $this->charset != '' ? 'charset=' . $this->charset : '';
+
         try {
-            $connString = sprintf('mysql:dbname=%s;mysql:charset=%s;host=%s',$this->dbname, $this->charset, $this->host);
+            $connString = sprintf('%s:dbname=%s;host=%s;%s', $this->dbms, $this->dbname, $this->host, $charset);
             $this->connection = new \PDO($connString, $this->login, $this->password);
             $this->connection->setAttribute(\PDO::ATTR_ERRMODE, \PDO::ERRMODE_EXCEPTION);
             //$this->connection->setAttribute(\PDO::MYSQL_ATTR_INIT_COMMAND, "SET NAMES utf8");
@@ -128,7 +163,8 @@ class Db {
      *
      * @return bool 
      */
-    private function executeQuery() {
+    private function executeQuery(): bool
+    {
         try {
             $this->statement->execute();
             if ($this->debug) { $this->dumpQuery(); }
@@ -145,7 +181,8 @@ class Db {
      *
      * @return void
      */
-    private function dumpQuery() {
+    private function dumpQuery()
+    {
         ob_start();
         $this->statement->debugDumpParams();
         $this->queryDump = ob_get_clean();
@@ -153,7 +190,7 @@ class Db {
         $this->queryDump .= "\n";
 
         $i = 0;
-        foreach($this->arrParams as $param) {
+        foreach($this->parameters as $param) {
             $this->queryDump .= "[" . ++$i . "] $param[0]: $param[1]\n";
         }
     }
@@ -163,11 +200,12 @@ class Db {
      *
      * @return void
      */
-    private function bindParameters() {
-        if ($this->arrParams != null) { 
-            $imax = sizeof($this->arrParams);
+    private function bindParameters(): void
+    {
+        if ($this->parameters != null) { 
+            $imax = sizeof($this->parameters);
             for($i = 0; $i < $imax; $i++) {
-                $this->statement->bindParam(':'.$this->arrParams[$i][0], $this->arrParams[$i][1]);
+                $this->statement->bindParam(':'.$this->parameters[$i][0], $this->parameters[$i][1]);
             }
         }
     }
@@ -176,10 +214,13 @@ class Db {
      * Prepare query before binding parameters (if any)
      *
      * @param string $query
-     * @return void
+     * @return bool true on success, false on failure
      */
-    private function prepareQuery(string $query) {
-        $this->statement = $this->connection->prepare($query);
+    private function prepareQuery(string $query): bool
+    {
+        if(!($this->statement = $this->connection->prepare($query))) {
+            throw new \Exception("Query failed to prepare!");
+        }
     }
 
     /**
@@ -187,27 +228,30 @@ class Db {
      *
      * @return void
      */
-    private function retrieveLastId() {
+    private function retrieveLastId(): void
+    {
         $this->lastId = $this->connection->lastInsertId();
     }
 
     /**
      * Get the next row of a result set for a select query
-     * (FETCH_BOTH: returns an array indexed by both column name and 0-indexed column number as returned in your result set)
-     * Return false on failure
      *
-     * @return array
+     * @param int $fetchStyle default PDO::FETCH_ASSOC (see other options at http://php.net/manual/en/pdostatement.fetch.php)
+     * @return array|false either return an array containing the next row or false on failure to do so
      */
-    public function getNextRow() { return $this->statement->fetch(); }
+    public function getNextRow(int $fetchStyle = \PDO::FETCH_ASSOC)
+    {
+        return $this->statement->fetch($fetchStyle);
+    }
 
     /**
      * Execute a select query
-     * Return true on success, false on failure
      *
      * @param string $query
-     * @return bool
+     * @return bool true on success, false on failure
      */
-    public function select(string $query) {
+    public function select(string $query): bool
+    {
         // reset the result set
         $this->statement = false;
         // reset error message
@@ -224,12 +268,12 @@ class Db {
 
     /**
      * Execute an insert query
-     * Return true on success, false on failure
      *
      * @param string $query
-     * @return bool
+     * @return bool true on success, false on failure
      */
-    public function insert(string $query) {
+    public function insert(string $query): bool
+    {
         // reset the result set
         $this->statement = false;
         // reset error message
@@ -249,12 +293,12 @@ class Db {
 
     /**
      * Execute an update query
-     * Return true on success, false on failure
      *
      * @param string $query
-     * @return bool
+     * @return bool true on success, false on failure
      */
-    public function update(string $query) {
+    public function update(string $query): bool
+    {
         // reset the result set
         $this->statement = false;
         // reset error message
@@ -271,12 +315,12 @@ class Db {
 
     /**
      * Execute a delete query
-     * Return true on success, false on failure
      *
      * @param string $query
-     * @return bool
+     * @return bool true on success, false on failure
      */
-    public function delete(string $query) {
+    public function delete(string $query): bool
+    {
         // reset the result set
         $this->statement = false;
         // reset error message
@@ -293,12 +337,12 @@ class Db {
 
     /**
      * Execute a script
-     * Return true on success, false on failure
      *
      * @param string $script
-     * @return bool
+     * @return bool true on success, false on failure
      */
-    public function execScript(string $script) {
+    public function execScript(string $script): bool
+    {
         // reset the result set
         $this->statement = false;
         // reset error message
