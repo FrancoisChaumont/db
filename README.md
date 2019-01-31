@@ -1,4 +1,4 @@
-# DB - communicate with databases using PDO
+# DB - interaction with databases using PDO
 
 ![GitHub release](https://img.shields.io/github/release/FrancoisChaumont/db.svg)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/FrancoisChaumont/db/issues)
@@ -12,7 +12,7 @@ PHP libray to communicate with databases using PDO
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Requirements
-PHP 7.1+ | MySQL/MariaDB 
+PHP 7.1+ | MySQL/MariaDB/PostgreSQL
 
 ### Installation
 Install this package with composer by simply adding the following to your composer.json file:  
@@ -46,5 +46,5 @@ See also the list of [contributors](https://github.com/FrancoisChaumont/db/graph
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
 ## Notes
-Todo: Add support for more databases (currently only supports MySQL and MariaDB)
+Todo: Add support for more databases (currently only supports MySQL/MariaDB and PostgreSQL)
 
