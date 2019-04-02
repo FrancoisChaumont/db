@@ -12,7 +12,7 @@ $password = 'udbclasspassw';
 
 // instantiation of the class and attempted connection to the database
 echo '### Connection to the database: ';
-$db = new Db($dbms, $dbname, $host, $login, $password, 'utf8mb4', true);
+$db = new Db($dbms, $dbname, $host, $login, $password, 0, 'utf8mb4', true);
 
 if ($db->isConnected()) { 
     echo "CONNECTED\n"; 

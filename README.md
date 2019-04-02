@@ -1,4 +1,4 @@
-# DB - interact with databases using PDO
+# DB - Database management library using PDO
 
 ![GitHub release](https://img.shields.io/github/release/FrancoisChaumont/db.svg)
 [![contributions welcome](https://img.shields.io/badge/contributions-welcome-brightgreen.svg?style=flat)](https://github.com/FrancoisChaumont/db/issues)
@@ -6,13 +6,17 @@
 [![GitHub stars](https://img.shields.io/github/stars/FrancoisChaumont/db.svg)](https://github.com/FrancoisChaumont/db/stargazers)
 ![Github All Releases](https://img.shields.io/github/downloads/FrancoisChaumont/db/total.svg)
 
-PHP libray to interact with databases using PDO
+PHP libray to manage databases using PDO  
+
+**Currently supports:**  
+`MySQL, MariaDB, PostgreSQL` - tested  
+`possibly others` - to be tested
 
 ## Getting started
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 ### Requirements
-PHP 7.1+ | `MySQL / MariaDB / PostgreSQL`
+PHP 7.1+
 
 ### Installation
 Install this package with composer by simply adding the following to your composer.json file:  
@@ -26,7 +30,7 @@ Install this package with composer by simply adding the following to your compos
 ```
 and running the following command:  
 ```
-composer require francoischaumont/db
+composer require francoischaumont/db "^3.0"
 ```
 
 ## Testing
