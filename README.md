@@ -36,7 +36,6 @@ composer require francoischaumont/db "^3.0"
 ## Testing
 Under the folder named *tests* you will find a SQL file and a test script ready to use.
 The SQL file is a dump of a test database which the test script relies on.
-Only run in web browser, not CLI.
 
 ## Built with
 * Visual Studio Code
@@ -50,5 +49,5 @@ See also the list of [contributors](https://github.com/FrancoisChaumont/db/graph
 This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
 ## Notes
-Todo: Add support for more databases (currently only supports MySQL, MariaDB and PostgreSQL)
+Todo: Test support to more databases
 

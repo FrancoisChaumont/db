@@ -11,7 +11,7 @@ $login = 'udbclass';
 $password = 'udbclasspassw';
 
 // instantiation of the class and attempted connection to the database
-echo '### Connection to the database: ';
+echo "### Connection to the database: ";
 $db = new Db($dbms, $dbname, $host, $login, $password, 0, 'utf8mb4', true);
 
 if ($db->isConnected()) { 
@@ -26,11 +26,11 @@ else {
 if ($db->isConnected()) {
 
 // select with syntax error
-    echo '### Select query with syntax error <br>';
+    echo "### Select query with syntax error\n";
     $db->emptyParams();
     $selectQuery = "select * from users_error";
     $success = $db->select($selectQuery);
-    if (!$success) { echo 'ERROR: '.$db->getErrMessage().'<br><br>'; }
+    if (!$success) { echo 'ERROR: '.$db->getErrMessage()."\n\n"; }
     else { 
         while ($row = $db->getNextRow()) {
             print_r($row);
@@ -38,17 +38,17 @@ if ($db->isConnected()) {
     }
 
 // select with no parameters and order by
-    echo '### Select query with no parameters and order by <br>';
+    echo "### Select query with no parameters and order by\n";
     $db->emptyParams();
     $selectQuery = "select * from users order by id desc";
     $db->select($selectQuery);
     while ($row = $db->getNextRow()) {
-        echo 'id: '.$row['id'].' / firstname: '.$row['firstname'].' / lastname: '.$row['lastname'].'<br>';
+        echo 'id: '.$row['id'].' / firstname: '.$row['firstname'].' / lastname: '.$row['lastname']."\n";
         print_r($row);
     }
 
 // select with parameters
-    echo '### Select query with parameters <br>';
+    echo "### Select query with parameters\n";
     $db->emptyParams();
     $selectQuery = "select * from users where id = :id or id = :id5";
     $db->addParamToBind('id', 1);
@@ -59,7 +59,7 @@ if ($db->isConnected()) {
     }
     
 // select with group by
-    echo '### Select query with group by <br>';
+    echo "### Select query with group by\n";
     $db->emptyParams();
     $selectQuery = "select level, count(*) totalPerLevel from users group by level";
     $db->select($selectQuery);
@@ -68,7 +68,7 @@ if ($db->isConnected()) {
     }
 
 // insert attempt with duplicated primary key
-    echo '### Insert query with duplicated primary key <br>';
+    echo "### Insert query with duplicated primary key\n";
     $db->emptyParams();
     $insertQuery = "insert into users (id, firstname, lastname) values (:id, :firstname, :lastname)";
     $db->addParamToBind('id', 1);
@@ -76,10 +76,10 @@ if ($db->isConnected()) {
     $db->addParamToBind('lastname', 'Jackson');
     $success = $db->insert($insertQuery);
 
-    if (!$success) { echo 'ERROR: '.$db->getErrMessage().'<br><br>'; }
+    if (!$success) { echo 'ERROR: '.$db->getErrMessage()."\n\n"; }
 
 // insert user Michael Jackson
-    echo '### Insert query with parameters <br>';
+    echo "### Insert query with parameters\n";
     $db->emptyParams();
     $insertQuery = "insert into users (firstname, lastname) values (:firstname, :lastname)";
     $db->addParamToBind('firstname', 'Michael');
@@ -87,7 +87,7 @@ if ($db->isConnected()) {
     $db->insert($insertQuery);
 
     $lastId = $db->getLastId();
-    echo 'Last inserted id = '.$lastId;
+    echo "Last inserted id = $lastId\n";
     $db->emptyParams();
     $selectQuery = "select * from users where id = :id";
     $db->addParamToBind('id', $lastId);
@@ -101,7 +101,7 @@ if ($db->isConnected()) {
     echo $db->getQueryDump();
 
 // update last inserted record
-    echo "### Update the last inserted record (id=$lastId) modifying lastname 'Jackson' into 'Jordan' <br>";
+    echo "### Update the last inserted record (id=$lastId) modifying lastname 'Jackson' into 'Jordan'\n";
     $db->emptyParams();
     $updateQuery = "update users set lastname = :lastname where id = :id";
     $db->addParamToBind('id', $lastId);
@@ -118,12 +118,12 @@ if ($db->isConnected()) {
     }
 
 // delete last inserted record
-    echo "### Delete the last inserted record (id=$lastId) <br>";
+    echo "### Delete the last inserted record (id=$lastId)\n";
     $db->emptyParams();
     $deleteQuery = "delete from users where id = :id";
     $db->addParamToBind('id', $lastId);
     $deleted = $db->delete($deleteQuery);
-    if ($deleted) { echo "Record deleted!<br>"; }
+    if ($deleted) { echo "Record deleted!\n"; }
 
     $db->emptyParams();
     $selectQuery = "select * from users where id = :id";
@@ -132,7 +132,7 @@ if ($db->isConnected()) {
         if ($row = $db->getNextRow()) {
             print_r($row);
         }
-        else { echo "Record id $lastId NOT found! <br><br>"; }
+        else { echo "Record id $lastId NOT found!\n\n"; }
     }
 }
 
