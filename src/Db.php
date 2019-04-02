@@ -214,9 +214,9 @@ class Db
      * Prepare query before binding parameters (if any)
      *
      * @param string $query
-     * @return bool true on success, false on failure
+     * @return void
      */
-    private function prepareQuery(string $query): bool
+    private function prepareQuery(string $query): void
     {
         if(!($this->statement = $this->connection->prepare($query))) {
             throw new \Exception("Query failed to prepare!");
