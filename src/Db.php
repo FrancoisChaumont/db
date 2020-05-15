@@ -25,10 +25,12 @@ class Db
 {
     // DBMS handled
     const MYSQL = 'mysql';
+    const MARIADB = 'mysql';
     const POSTGRESQL = 'pgsql';
 
     const DBMSs = [
         self::MYSQL,
+        self::MARIADB,
         self::POSTGRESQL
     ];
 
@@ -172,7 +174,7 @@ class Db
         // reset error message
         $this->errMessage = '';
 
-        $charset = $this->dbms == self::MYSQL && $this->charset != '' ? "charset={$this->charset}" : '';
+        $charset = in_array($this->dbms, [self::MYSQL, self::MARIADB]) && $this->charset != '' ? "charset={$this->charset}" : '';
         $port = $this->port > 0 ? "port={$this->port}" : '';
 
         try {
